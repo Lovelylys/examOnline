@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.mapper.TestPointMapper">
+
+	<!-- 数据库表映射 -->
+	<resultMap id="testPointRM" type="com.zh.pojo.TestPoint">
+		<id property="id" column="id"/>
+		<result property="firstTestPoint" column="first_test_point"/>
+		<result property="secondTestPoint" column="second_test_point"/>
+		<result property="thirdTestPoint" column="third_test_point"/>
+		<result property="difficulty" column="difficulty"/>
+		<association property="grade" javaType="com.zh.pojo.Grade">
+			<id property="gradeId" column="gradeid"/>
+			<result property="gradeName" column="gradename"/>
+		</association>
+		<association property="course" javaType="com.zh.pojo.Course">
+			<id property="courseId" column="courseid"/>
+			<result property="courseName" column="coursename"/>
+		</association>
+	</resultMap>
+	
+	<!-- 新增 -->
+	<insert id="insert">
+		insert into t_testpoint
+		<trim prefix="(" suffix=")" prefixOverrides=",">
+			<if test="firstTestPoint !=null and firstTestPoint !=''">
+				,first_test_point
+			</if>
+			<if test="secondTestPoint !=null and secondTestPoint !=''">
+				,second_test_point
+			</if>
+			<if test="thirdTestPoint !=null and thirdTestPoint !=''">
+				,third_test_point
+			</if>
+			<if test="grade !=null and grade.gradeId != null">
+				,grade_id
+			</if>
+			<if test="course !=null and course.courseId !=''">
+				,course_id
+			</if>
+			<if test="difficulty !=null">
+				,difficulty
+			</if>
+		</trim>
+		<trim prefix="values(" suffix=")" prefixOverrides=",">
+			<if test="firstTestPoint !=null and firstTestPoint !=''">
+				,#{firstTestPoint}
+			</if>
+			<if test="secondTestPoint !=null and secondTestPoint !=''">
+				,#{secondTestPoint}
+			</if>
+			<if test="thirdTestPoint !=null and thirdTestPoint !=''">
+				,#{thirdTestPoint}
+			</if>
+			<if test="grade !=null and grade.gradeId != null">
+				,#{grade.gradeId}
+			</if>
+			<if test="course !=null and course.courseId !=''">
+				,#{course.courseId}
+			</if>
+			<if test="difficulty !=null">
+				,#{difficulty}
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="com.zh.pojo.TestPoint">
+		update t_testpoint
+		<set>
+			<if test="firstTestPoint !=null and firstTestPoint !=''">
+				first_test_point = #{firstTestPoint},
+			</if>
+			<if test="secondTestPoint !=null and secondTestPoint !=''">
+				second_test_point = #{secondTestPoint},
+			</if>
+			<if test="thirdTestPoint !=null and thirdTestPoint !=''">
+				third_test_point = #{thirdTestPoint},
+			</if>
+			<if test="grade !=null and grade.gradeId != null">
+				grade_id= #{grade.gradeId},
+			</if>
+			<if test="course !=null and course.courseId !=''">
+				course_id= #{course.courseId},
+			</if>
+			<if test="difficulty !=null ">
+				difficulty= #{difficulty},
+			</if>
+		</set>
+			where id=#{id}
+	</update>
+	
+	<!-- 查询所有记录 -->
+	<select id="find" parameterType="int" resultMap="testPointRM">
+		select t1.id,t1.first_test_point,t1.second_test_point,t1.third_test_point,t1.difficulty,
+		 t2.courseid,t2.coursename,t3.gradeid,t3.gradename
+		 from t_testpoint t1,t_course t2,t_grade t3
+		<where>
+			and t1.course_id = t2.courseid
+			and t1.grade_id = t3.gradeid
+		</where>
+		order by t1.id
+	</select>
+	
+	<!-- 查询一个录 -->
+	<select id="get" parameterType="com.zh.pojo.TestPoint" resultMap="testPointRM">
+		select t1.id,t1.first_test_point,t1.second_test_point,t1.third_test_point,t1.difficulty,
+		t2.courseid,t2.coursename,t3.gradeid,t3.gradename
+		from t_testpoint t1,t_course t2,t_grade t3
+		<where>
+			and t1.course_id = t2.courseid
+			and t1.grade_id = t3.gradeid
+			and t1.id = #{id}
+		</where>
+	</select>
+	
+	<!-- 删除一条记录 -->
+	<delete id="delete" parameterType="int">
+		delete from t_testpoint
+		where id=#{id}
+	</delete>
+
+	<!--通过课程和年级id查询考点-->
+	<select id="qryTestPointByCourseAndGrade" resultMap="testPointRM">
+		select t1.id,t1.first_test_point,t1.second_test_point,t1.third_test_point,t1.difficulty,
+		t2.courseid,t2.coursename,t3.gradeid,t3.gradename
+		from t_testpoint t1,t_course t2,t_grade t3
+		<where>
+			and t1.course_id = t2.courseid
+			and t1.grade_id = t3.gradeid
+			<if test="courseId != null and courseId !=0">
+				and t2.courseid=#{courseId}
+			</if>
+			<if test="gradeId !=null and gradeId != 0">
+				and t3.gradeid = #{gradeId}
+			</if>
+		</where>
+		order by t1.id
+	</select>
+    <select id="qryFirstTestPointByCourse" resultMap="testPointRM">
+		select distinct t1.first_test_point
+		from t_testpoint t1
+		<where>
+			<if test="courseId !=null and courseId!=''">
+				and t1.course_id = #{courseId}
+			</if>
+		</where>
+	</select>
+    <select id="qrySecondTestPointByFirst" resultMap="testPointRM">
+        select distinct t1.second_test_point
+        from t_testpoint t1
+        <where>
+            <if test="firstTestPoints !=null">
+                t1.first_test_point in
+                <foreach collection="firstTestPoints" index="index" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="qryThirdTestPointBySecond" resultMap="testPointRM">
+        select distinct t1.third_test_point
+        from t_testpoint t1
+        <where>
+            <if test="secondTestPoints !=null">
+                t1.second_test_point in
+                <foreach collection="secondTestPoints" index="index" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+	<select id="qryTestPointByPointNames" resultMap="testPointRM">
+		select t1.id,t1.difficulty
+		from t_testpoint t1
+		<where>
+			<if test="firstTestPoints !=null">
+				and t1.first_test_point in
+                <foreach collection="firstTestPoints" index="index" open="(" close=")" separator="," item="item1">
+                    #{item1}
+                </foreach>
+			</if>
+            <if test="secondTestPoints !=null">
+               and t1.second_test_point in
+                <foreach collection="secondTestPoints" index="index" open="(" close=")" separator="," item="item2">
+                    #{item2}
+                </foreach>
+            </if>
+            <if test="thirdTestPoints !=null">
+                and t1.third_test_point in
+                <foreach collection="thirdTestPoints" index="index" open="(" close=")" separator="," item="item3">
+                    #{item3}
+                </foreach>
+            </if>
+		</where>
+	</select>
+	<select id="qryTestPointByIds" resultMap="testPointRM">
+		select t1.id,t1.first_test_point,t1.second_test_point,t1.third_test_point
+		from t_testpoint t1
+		<where>
+			<if test="ids !=null">
+				t1.id in
+				<foreach collection="ids" index="index" open="(" close=")" separator="," item="item">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+</mapper>

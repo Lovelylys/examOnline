@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.mapper.QuestionMapper">
+
+	<!-- 数据库表映射 -->
+	<resultMap id="questionRM" type="com.zh.pojo.Question">
+		<id property="questionId" column="questionid"/>
+		<result property="quesName" column="quesname"/>
+		<result property="optionA" column="optiona"/>
+		<result property="optionB" column="optionb"/>
+		<result property="optionC" column="optionc"/>
+		<result property="optionD" column="optiond"/>
+		<result property="answer" column="answer"/>
+		<result property="userAnswer" column="useranswer"/>
+		<result property="gradeId" column="gradeid"/>
+		<result property="difficulty" column="difficulty"/>
+		<result property="remark" column="remark"/>
+		<result property="answerDetail" column="answerdetail"/>
+		<result property="testPointId" column="testpointid"/>
+		<result property="wrongCount" column="wrongcount"/>
+		<result property="selectedCount" column="selectedcount"/>
+		<association property="course" javaType="com.zh.pojo.Course">
+			<id property="courseId" column="courseid"/>
+			<result property="courseName" column="coursename"/>
+		</association>
+		<association property="type" javaType="com.zh.pojo.Type">
+			<id property="typeId" column="typeid"/>
+			<result property="typeName" column="typename"/>
+			<result property="score" column="score"/>
+		</association>
+	</resultMap>
+	
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.zh.dto.AddQuestionDto">
+		insert into t_question
+		<trim prefixOverrides="," prefix="(" suffix=")">
+			<if test="quesName !=null and quesName !=''">
+				,quesname
+			</if>
+			<if test="optionA !=null and optionA !=''">
+				,optiona
+			</if>
+			<if test="optionB !=null and optionB !=''">
+				,optionb
+			</if>
+			<if test="optionC !=null and optionC !=''">
+				,optionc
+			</if>
+			<if test="optionD !=null and optionD !=''">
+				,optiond
+			</if>
+			<if test="answer !=null and answer !=''">
+				,answer
+			</if>
+			<if test="userAnswer !=null and userAnswer !=''">
+				,useranswer
+			</if>
+			<if test="answerDetail !=null and answerDetail !=''">
+				,answerdetail
+			</if>
+			<if test="testPointId !=null and testPointId !=''">
+				,testpointid
+			</if>
+			<if test="remark !=null and remark !=''">
+				,remark
+			</if>
+			<if test="course !=null and course.courseId !=null">
+				,courseid
+			</if>
+			<if test="type !=null and type.typeId !=null">
+				,typeid
+			</if>
+			<if test="difficulty !=null">
+				,difficulty
+			</if>
+			<if test="wrongCount !=null">
+				,wrongcount
+			</if>
+			<if test="selectedCount !=null">
+				,selectedcount
+			</if>
+		</trim>
+		<trim prefixOverrides="," prefix="values(" suffix=")">
+			<if test="quesName !=null and quesName !=''">
+				,#{quesName}
+			</if>
+			<if test="optionA !=null and optionA !=''">
+				,#{optionA}
+			</if>
+			<if test="optionB !=null and optionB !=''">
+				,#{optionB}
+			</if>
+			<if test="optionC !=null and optionC !=''">
+				,#{optionC}
+			</if>
+			<if test="optionD !=null and optionD !=''">
+				,#{optionD}
+			</if>
+			<if test="answer !=null and answer !=''">
+				,#{answer}
+			</if>
+			<if test="userAnswer !=null and userAnswer !=''">
+				,#{userAnswer}
+			</if>
+			<if test="answerDetail !=null and answerDetail !=''">
+				,#{answerDetail}
+			</if>
+			<if test="testPointId !=null and testPointId !=''">
+				,#{testPointId}
+			</if>
+			<if test="remark !=null and remark !=''">
+				,#{remark}
+			</if>
+			<if test="course !=null and course.courseId !=null">
+				,#{course.courseId}
+			</if>
+			<if test="type !=null and type.typeId !=null">
+				,#{type.typeId}
+			</if>
+			<if test="difficulty !=null">
+				,#{difficulty}
+			</if>
+			<if test="wrongCount !=null">
+				,#{wrongCount}
+			</if>
+			<if test="selectedCount !=null">
+				,#{selectedCount}
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="com.zh.dto.AddQuestionDto">
+		update t_question
+		<set>
+			<if test="quesName!=null">
+				quesname=#{quesName},
+			</if>
+			<if test="optionA!=null">
+				optiona=#{optionA},
+			</if>
+			<if test="optionB!=null">
+				optionb=#{optionB},
+			</if>
+			<if test="optionC!=null">
+				optionc=#{optionC},
+			</if>
+			<if test="optionD!=null">
+				optiond=#{optionD},
+			</if>
+			<if test="answer!=null">
+				answer=#{answer},
+			</if>
+			<if test="userAnswer!=null">
+				useranswer=#{userAnswer},
+			</if>
+			<if test="type!=null and type.typeId != null">
+				typeid=#{type.typeId},
+			</if>
+			<if test="difficulty!=null">
+				difficulty=#{difficulty},
+			</if>
+			<if test="remark!=null">
+				remark=#{remark},
+			</if>
+			<if test="answerDetail!=null">
+				answerdetail=#{answerDetail},
+			</if>
+			<if test="course != null and course.courseId!=null">
+				courseid=#{course.courseId},
+			</if>
+			<if test="testPointId != null and testPointId !=''">
+				testpointid=#{testPointId},
+			</if>
+			<if test="wrongCount !=null">
+				wrongcount = #{wrongCount},
+			</if>
+			<if test="selectedCount !=null">
+				selectedcount = #{selectedCount},
+			</if>
+		</set>
+			where questionid=#{questionId}
+	</update>
+	
+	<!-- 查询所有记录 -->
+	<select id="find" parameterType="string" resultMap="questionRM">
+		select t1.questionid, t1.quesname, t1.optiona, t1.optionb, t1.optionc, t1.optiond, t1.answer, t1.answerdetail, t1.useranswer,t1.wrongCount,t1.selectedCount,
+		 t1.difficulty, t1.remark, t1.testpointid, t2.courseid,t2.coursename,t3.typeid,t3.typename,t3.score
+		 from t_question t1,t_course t2,t_type t3
+		<where>
+			and t1.courseid = t2.courseid
+			and t1.typeid = t3.typeid
+		</where>
+	</select>
+	
+	<!-- 查询一个录 -->
+	<select id="get" parameterType="com.zh.pojo.Question" resultMap="questionRM">
+		select t1.questionid, t1.quesname, t1.optiona, t1.optionb, t1.optionc, t1.optiond, t1.answer, t1.answerdetail, t1.useranswer,t1.wrongCount,t1.selectedCount,
+		t1.difficulty, t1.remark, t1.testpointid, t2.courseid,t2.coursename,t3.typeid,t3.typename,t3.score
+		from t_question t1,t_course t2,t_type t3
+		<where>
+			and t1.courseid = t2.courseid
+			and t1.typeid = t3.typeid
+			and questionid = #{id}
+		</where>
+	</select>
+	
+	<!-- 删除一条记录 -->
+	<delete id="delete" parameterType="int">
+		delete from t_question
+		where questionid=#{id}
+	</delete>
+	
+	<!-- 随机生成相应数量的题目 -->
+	<select id="createPaper" parameterType="map" resultMap="questionRM">
+		select * from t_question 
+			where gradeid=#{gradeId}
+			and typeid=#{typeId}
+			and courseid=#{courseId}
+			ORDER BY RAND() LIMIT #{num} 
+	</select>
+	<select id="qryQuestionByCourseAndType" resultMap="questionRM">
+		select t1.questionid, t1.quesname, t1.optiona, t1.optionb, t1.optionc, t1.optiond, t1.answer, t1.answerdetail, t1.useranswer,t1.wrongCount,t1.selectedCount,
+		t1.difficulty, t1.remark, t1.testpointid, t2.courseid,t2.coursename,t3.typeid,t3.typename,t3.score
+		from t_question t1,t_course t2,t_type t3
+		<where>
+			and t1.courseid = t2.courseid
+			and t1.typeid = t3.typeid
+			<if test="courseId !=null and courseId != 0">
+				and t2.courseid = #{courseId}
+			</if>
+			<if test="typeId != null and typeId != 0">
+				and t3.typeid = #{typeId}
+			</if>
+		</where>
+	</select>
+	<select id="createPaperByEasyQues" resultMap="questionRM">
+		<bind name="_testPointId" value="paraMap.testPointId + '' "/>
+		select t1.questionid, t1.quesname, t1.optiona, t1.optionb, t1.optionc, t1.optiond, t1.answer, t1.answerdetail, t1.useranswer,t1.wrongCount,t1.selectedCount,
+		t1.difficulty, t1.remark, t1.testpointid, t2.courseid,t2.coursename,t3.typeid,t3.typename,t3.score
+		from t_question t1,t_course t2,t_type t3
+		<where>
+			and t1.courseid = t2.courseid
+			and t1.typeid = t3.typeid
+            <if test="paraMap.testPointId != null and paraMap != null">
+				and t1.testpointid = #{_testPointId}
+			</if>
+            <if test="paperList !=null">
+                and  t1.questionid not in
+                <foreach collection="paperList" index="index" open="(" close=")" separator="," item="item">
+                    #{item.questionId}
+                </foreach>
+            </if>
+		</where>
+        <if test="paraMap.num != null and paraMap != null">
+            ORDER BY RAND() LIMIT #{paraMap.num}
+        </if>
+	</select>
+	<select id="createPaperByDiffiQues" resultMap="questionRM">
+		<bind name="_testPointId" value="'%'+ paraMap.testPointId +'%'"/>
+		select t1.questionid, t1.quesname, t1.optiona, t1.optionb, t1.optionc, t1.optiond, t1.answer, t1.answerdetail, t1.useranswer,t1.wrongCount,t1.selectedCount,
+		t1.difficulty, t1.remark, t1.testpointid, t2.courseid,t2.coursename,t3.typeid,t3.typename,t3.score
+		from t_question t1,t_course t2,t_type t3
+		<where>
+			and t1.courseid = t2.courseid
+			and t1.typeid = t3.typeid
+			and t1.testpointid like '%,%'
+			<if test="paraMap.testPointId != null and paraMap != null">
+				and t1.testpointid like #{_testPointId}
+			</if>
+			<if test="paperList !=null">
+				and  t1.questionid not in
+				<foreach collection="paperList" index="index" open="(" close=")" separator="," item="item">
+					#{item.questionId}
+				</foreach>
+			</if>
+		</where>
+		<if test="paraMap.num != null and paraMap != null">
+			ORDER BY RAND() LIMIT #{paraMap.num}
+		</if>
+	</select>
+</mapper>

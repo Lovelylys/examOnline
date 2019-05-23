@@ -1,0 +1,31 @@
+/*====================================
+  分页信息（表格依赖样式）
+  ===================================*/
+.pagination a {text-decoration: none;border: solid 1px;	}
+.pagination .pxofy{float:left;margin-left: 5px;height:25px;*padding-top:1px;}
+.pagination a, .pagination span {display: block;float: left;line-height:24px;padding:0 9px;border-radius:2px;margin-right: 5px;font-family:Arial, Helvetica, sans-serif !important;}
+.pagination .current {cursor:default;border: solid 1px ;}
+.pagination .prev, .pagination .next{*line-height:22px;}
+
+/*分页样式*/
+.pagination a{color: #000000;border-color:#8EB2D2; background:#eaf4fa;}
+.pagination a:hover{color:#023054;border-color:#8EB2D2;background:#B8DFFB;}
+.pagination .current{color:#fff;border-color:#4ea052;background:#5ebc62;}
+.pagination .current.prev, .pagination .current.next{color:#B9B9B9;border-color:#D3D3D3;background:#fff;}
+.pagination .pxofy{color: #023054;}
+
+/*分页*/
+.pagination{ margin-top:10px;padding:0 10px;}
+.pagination .pxofy{float:left;color:#6c6c6c;}
+.pagination .pagin-list{float:right;}
+.pagination .goto{float:right;margin-left:10px;}
+.pagination .goto .text{padding:0;}
+.pagination .goto input[type=text]{float:left;width:25px;height:22px;border:1px solid #8EB2D2;outline:none; text-align:center;}
+
+/*clear*/
+.ue-clear:after{content: "";display:block;height:0;clear:both;visibility:hidden;}
+.ue-clear{display:inline-block;}
+*html .ue-clear{height:1%;}
+.ue-clear{display:block; overflow:hidden;}
+
+.placeholder{color:#ddd;}

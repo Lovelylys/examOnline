@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.mapper.UserMapper">
+
+	<!-- 数据库表映射 -->
+	<resultMap id="userRM" type="com.zh.pojo.User">
+		<id property="userId" column="userid"/>
+		<result property="userName" column="username"/>
+		<result property="userPwd" column="userpwd"/>
+		<result property="gradeId" column="gradeid"/>
+		<result property="userType" column="usertype"/>
+		<result property="userState" column="userstate"/>
+		<result property="email" column="email"/>
+		<result property="telephone" column="telephone"/>
+		<result property="address" column="address"/>
+		<result property="remark" column="remark"/>
+		<result property="classId" column="classid"/>
+		<association property="grade" javaType="com.zh.pojo.Grade">
+			<id property="gradeId" column="gradeid"/>
+			<result property="gradeName" column="gradename"/>
+		</association>
+ 	</resultMap>
+	
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.zh.pojo.User">
+		insert into t_user
+		<trim prefix="(" suffix=")" prefixOverrides=",">
+			<if test="userId != null and userId !=''">
+				,userid
+			</if>
+			<if test="userName != null and userName !=''">
+				,username
+			</if>
+			<if test="userPwd != null and userPwd !=''">
+				,userpwd
+			</if>
+			<if test="gradeId != null and gradeId !=''">
+				,gradeid
+			</if>
+			<if test="userType != null">
+				,usertype
+			</if>
+			<if test="userState != null">
+				,userstate
+			</if>
+			<if test="email != null and email !=''">
+				,email
+			</if>
+			<if test="telephone != null and telephone !=''">
+				,telephone
+			</if>
+			<if test="address != null and address !=''">
+				,address
+			</if>
+			<if test="remark != null and remark !=''">
+				,remark
+			</if>
+			<if test="classId != null and classId !=''">
+				,classid
+			</if>
+		</trim>
+		<trim prefix="values(" suffix=")" prefixOverrides=",">
+			<if test="userId != null and userId !=''">
+				,#{userId}
+			</if>
+			<if test="userName != null and userName !=''">
+				,#{userName}
+			</if>
+			<if test="userPwd != null and userPwd !=''">
+				,#{userPwd}
+			</if>
+			<if test="gradeId != null and gradeId !=''">
+				,#{gradeId}
+			</if>
+			<if test="userType != null">
+				,#{userType}
+			</if>
+			<if test="userState != null">
+				,#{userState}
+			</if>
+			<if test="email != null and email !=''">
+				,#{email}
+			</if>
+			<if test="telephone != null and telephone !=''">
+				,#{telephone}
+			</if>
+			<if test="address != null and address !=''">
+				,#{address}
+			</if>
+			<if test="remark != null and remark !=''">
+				,#{remark}
+			</if>
+			<if test="classId != null and classId !=''">
+				,#{classId}
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="com.zh.pojo.User">
+		update t_user
+		<set>
+			<if test="userName!=null">
+				username=#{userName},
+			</if>
+			<if test="userPwd!=null and userPwd !=''">
+				userpwd=#{userPwd},
+			</if>
+			<if test="userType!=null">
+				usertype=#{userType},
+			</if>
+			<if test="userState!=null">
+				userstate=#{userState},
+			</if>
+			<if test="email!=null">
+				email=#{email},
+			</if>
+			<if test="telephone!=null">
+				telephone=#{telephone},
+			</if>
+			<if test="address!=null">
+				address=#{address},
+			</if>
+			<if test="remark!=null">
+				remark=#{remark},
+			</if>
+			<if test="classId!=null">
+				classid=#{classId},
+			</if>
+		</set>
+			where userid=#{userId}
+	</update>
+	
+	<!-- 查询所有记录 -->
+	<select id="find" parameterType="string" resultMap="userRM">
+		select * from t_user
+		where 1=1
+		order by userstate
+	</select>
+	
+	<!-- 查询所有待审核记录 -->
+	<select id="findPending" parameterType="string" resultMap="userRM">
+		select * from t_user
+	</select>
+	
+	<!-- 查询一个录 -->
+	<select id="get" parameterType="com.zh.pojo.User" resultMap="userRM">
+		select * from t_user
+		where userid=#{id}
+	</select>
+	
+	<!-- 删除一条记录 -->
+	<delete id="delete" parameterType="string">
+		delete from t_user
+		where userid=#{id}
+	</delete>
+	
+	<!-- 查询一个录 -->
+	<select id="getStu" resultMap="userRM">
+		select t1.* ,t2.gradename
+		from t_user t1, t_grade t2
+		<where>
+		 	and t1.gradeid = t2.gradeid
+		<if test="userId != null and userId !=''">
+			and userid=#{userId}
+		</if>
+			and userstate=1
+		</where>
+	</select>
+    <select id="findAllTeacher" resultType="com.zh.pojo.User">
+        select * from t_user
+        <where>
+            usertype = 1;
+        </where>
+    </select>
+	<select id="findAllStudent" resultType="com.zh.pojo.User">
+		select * from t_user
+		<where>
+			usertype = 0;
+		</where>
+	</select>
+	<select id="qryStudentsByClassId" resultType="com.zh.pojo.User">
+		select * from t_user
+		<where>
+			classid = #{classId}
+		</where>
+	</select>
+</mapper>

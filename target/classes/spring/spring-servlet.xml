@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+    <context:annotation-config/>
+<!--启动注解,加载controller的包-->
+    <context:component-scan base-package="com.zh">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+    <!--添加一个默认的servlet处理者-->
+    <mvc:default-servlet-handler/>
+<!--为了让原有的controller生效，要注解一个驱动-->
+    <mvc:annotation-driven/>
+    <!--<mvc:resources mapping="/static/css/*" location="static/css/"/>-->
+
+    <!--内部的视图资源解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp"/>
+        <property name="suffix" value=""/>
+    </bean>
+    <!--拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/admin/**/*"/>
+            <mvc:mapping path="/examClass/**/*"/>
+            <mvc:mapping path="/course/**/*"/>
+            <mvc:mapping path="/grade/**/*"/>
+            <!--排除管理员登陆的uri-->
+            <mvc:exclude-mapping path="/admin/toLogin.action"/>
+            <mvc:exclude-mapping path="/admin/userLogin.action"/>
+            <mvc:exclude-mapping path="/admin/userRegist.action"/>
+            <mvc:exclude-mapping path="/examClass/queryClassByGradeId.action"/>
+            <bean class="com.zh.interceptors.AdminSessionInterceptor">
+            </bean>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/teacher/**/*"/>
+            <mvc:mapping path="/answer/**/*"/>
+            <mvc:mapping path="/exam/**/*"/>
+            <mvc:mapping path="/paper/**/*"/>
+            <mvc:mapping path="/question/**/*"/>
+            <mvc:mapping path="/result/**/*"/>
+            <mvc:mapping path="/testPoint/**/*"/>
+            <mvc:mapping path="/type/**/*"/>
+
+            <mvc:exclude-mapping path="/teacher/toLogin.action"/>
+            <mvc:exclude-mapping path="/teacher/userLogin.action"/>
+            <mvc:exclude-mapping path="/teacher/toRegistPage.action"/>
+            <mvc:exclude-mapping path="/teacher/addUserInfo.action"/>
+            <bean class="com.zh.interceptors.TeacherSessionInterceptor"></bean>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/user/**/*"/>
+            <mvc:mapping path="/stuPaper/**/*"/>
+            <mvc:mapping path="/errorBook/**/*"/>
+            <mvc:mapping path="/stuAnswer/**/*"/>
+
+            <mvc:exclude-mapping path="/user/toLogin.action"/>
+            <mvc:exclude-mapping path="/user/checkPwd.action"/>
+            <mvc:exclude-mapping path="/user/toRegistPage.action"/>
+            <mvc:exclude-mapping path="/user/addUserInfo.action"/>
+            <bean class="com.zh.interceptors.StuSessionInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!--配置消息转化器以支持json的使用-->
+
+
+    <!--文件上传解析器-->
+    <!--id必须为这个名字，因为代码已经写死了-->
+    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
+        <!--上传文件大小-->
+        <property name="maxUploadSize" value="1024000000"/>
+        <!--单个大小-->
+        <property name="maxUploadSizePerFile" value="10240000"/>
+        <!--指定编码-->
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+</beans>

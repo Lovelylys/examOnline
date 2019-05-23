@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.mapper.AbilityMapper">
+
+    <resultMap id="resultRM" type="com.zh.pojo.Ability">
+        <id property="id" column="id"/>
+        <result property="score" column="score"/>
+        <result property="gettedScore" column="gettedscore"/>
+        <association property="student" javaType="com.zh.pojo.User">
+            <id property="userId" column="studentid"/>
+            <result property="userName" column="studentname"/>
+            <result property="telephone" column="telephone"/>
+        </association>
+        <association property="examClass" javaType="com.zh.pojo.ExamClass">
+            <id property="id" column="classid"/>
+            <result property="className" column="classname"/>
+        </association>
+        <association property="course" javaType="com.zh.pojo.Course">
+            <id property="courseId" column="courseid"/>
+            <result property="courseName" column="coursename"/>
+        </association>
+        <association property="testPoint" javaType="com.zh.pojo.TestPoint">
+            <id property="id" column="testpointid"/>
+            <result property="firstTestPoint" column="first_test_point"/>
+            <result property="secondTestPoint" column="second_test_point"/>
+            <result property="thirdTestPoint" column="third_test_point"/>
+        </association>
+    </resultMap>
+
+    <insert id="insert">
+        insert into u_answers
+        <trim prefix="(" suffix=")" prefixOverrides=",">
+            <if test="studentId !=null and studentId !=''">
+                ,studentid
+            </if>
+            <if test="gettedScore !=null">
+                ,gettedscore
+            </if>
+            <if test="score !=null">
+                ,score
+            </if>
+            <if test="testPointId !=null">
+                ,testpointid
+            </if>
+            <if test="classId !=null">
+                ,classid
+            </if>
+            <if test="courseId !=null">
+                ,courseid
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" prefixOverrides=",">
+            <if test="studentId !=null and studentId !=''">
+                ,#{studentId}
+            </if>
+            <if test="gettedScore !=null">
+                ,#{gettedScore}
+            </if>
+            <if test="score !=null">
+                ,#{score}
+            </if>
+            <if test="testPointId !=null">
+                ,#{testPointId}
+            </if>
+            <if test="classId !=null">
+                ,#{classId}
+            </if>
+            <if test="courseId !=null">
+                ,#{courseId}
+            </if>
+        </trim>
+    </insert>
+    <update id="update">
+        update u_answers
+        <set>
+            <if test="studentId !=null and studentId !=''">
+                studentid = #{studentId},
+            </if>
+            <if test="gettedScore !=null">
+                gettedscore = #{gettedScore},
+            </if>
+            <if test="score !=null">
+                score = #{score},
+            </if>
+            <if test="testPointId !=null">
+                testpointid = #{testPointId},
+            </if>
+            <if test="classId !=null">
+                classid = #{classId},
+            </if>
+            <if test="courseId !=null">
+                courseid = #{courseId},
+            </if>
+        </set>
+        <where>
+            <if test="testPointId != null">
+                and testpointid =#{testPointId}
+            </if>
+            <if test="studentId != null and studentId !=''">
+                and studentid = #{studentId}
+            </if>
+        </where>
+    </update>
+    <select id="queryAnswerByClassAndCourse" resultMap="resultRM">
+        select t1.userid as studentid,t1.username as studentname,t1.telephone,t2.coursename,t2.courseid,t3.classname,a.classid
+        from t_user t1,t_course t2,t_class t3,
+        (select distinct studentid,courseid,classid from u_answers) a
+        <where>
+        and t1.userid = a.studentid
+        and t2.courseid = a.courseid
+        and t3.id = a.classid
+        <if test="classId != null and classId !=0">
+            and t3.id =#{classId}
+        </if>
+        <if test="courseId != null and courseId !=0">
+            and t2.courseid = #{courseId}
+        </if>
+        </where>
+    </select>
+    <select id="qryTestPointScoreByCourseAndStudent" resultMap="resultRM">
+        select t1.testpointid,t2.first_test_point,t2.second_test_point,t2.third_test_point,t1.gettedscore, t1.score
+        from u_answers t1,t_testpoint t2
+        <where>
+            and t1.testpointid = t2.id
+            <if test="studentId != null and studentId !=''">
+                and t1.studentid = #{studentId}
+            </if>
+            <if test="courseId != null and courseId !=0">
+                and t1.courseid = #{courseId}
+            </if>
+        </where>
+    </select>
+    <select id="queryAnswerByCourse" resultMap="resultRM">
+        select t2.coursename,t2.courseid
+        from t_course t2,
+        (select distinct studentid,courseid from u_answers where studentid = #{userId}) a
+        <where>
+            and t2.courseid = a.courseid
+            <if test="courseId != null and courseId !=0">
+                and t2.courseid = #{courseId}
+            </if>
+        </where>
+    </select>
+    <select id="qryAnswerByTestPointIdAndStudentId" resultMap="resultRM">
+        select id, studentid, gettedscore, testpointid, score, classid, courseid
+        from u_answers
+        <where>
+            <if test="testPointId != null">
+               and testpointid = #{testPointId}
+            </if>
+            <if test="studentId != null and studentId != ''">
+               and  studentid = #{studentId}
+            </if>
+        </where>
+    </select>
+
+</mapper>
