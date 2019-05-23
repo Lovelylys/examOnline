@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.mapper.PaperMapper">
+
+	<!-- 数据库表映射 -->
+	<resultMap id="paperRM" type="com.zh.pojo.Paper">
+		<result property="paperId" column="paperid"/>
+		<result property="paperName" column="papername"/>
+		<result property="courseId" column="courseid"/>
+		<result property="gradeId" column="gradeid"/>
+		<result property="userId" column="userid"/>
+		<result property="questionId" column="questionid"/>
+		<result property="beginTime" column="begintime"/>
+		<result property="endTime" column="endtime"/>
+		<result property="allowTime" column="allowtime"/>
+		<result property="score" column="score"/>
+		<result property="paperState" column="paperstate"/>
+		<result property="deadLine" column="deadline"/>
+		<result property="classId" column="classid"/>
+        <result property="teacherId" column="teacherid"/>
+        <result property="deadLine" column="deadline" javaType="java.util.Date"/>
+		<result property="totalScore" column="totalscore"/>
+		<association property="course" javaType="com.zh.pojo.Course">
+			<id property="courseId" column="courseid"/>
+			<result property="courseName" column="coursename"/>
+		</association>
+		<association property="grade" javaType="com.zh.pojo.Grade">
+			<id property="gradeId" column="gradeid"/>
+			<result property="gradeName" column="gradename"/>
+		</association>
+		<!--修改2019.4.4-->
+		<association property="teacher" javaType="com.zh.pojo.User">
+			<id property="userId" column="teacherid"/>
+			<result property="userName" column="teacherName"/>
+		</association>
+		<association property="examClass" javaType="com.zh.pojo.ExamClass">
+			<id property="id" column="classid"/>
+			<result property="className" column="classname"/>
+		</association>
+		<association property="student" javaType="com.zh.pojo.User">
+			<id property="userId" column="userid"/>
+			<result property="userName" column="username"/>
+		</association>
+	</resultMap>
+	
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.zh.dto.AddPaperDto">
+		insert into t_paper
+		<trim prefix="(" suffix=")" prefixOverrides=",">
+			<if test="paperId != null and paperId !=''">
+				,paperid
+			</if>
+			<if test="paperName != null and paperName !=''">
+				,papername
+			</if>
+			<if test="course.courseId != null and course != null">
+				,courseid
+			</if>
+			<if test="grade.gradeId != null and grade != null">
+				,gradeid
+			</if>
+			<if test="userId != null and userId !=''">
+				,userid
+			</if>
+			<if test="questionId != null and questionId !=''">
+				,questionid
+			</if>
+			<if test="beginTime != null ">
+				,begintime
+			</if>
+			<if test="endTime != null ">
+				,endtime
+			</if>
+			<if test="allowTime != null and allowTime !=''">
+				,allowtime
+			</if>
+			<if test="score != null and score !=''">
+				,score
+			</if>
+			<if test="paperState != null and paperState !=''">
+				,paperstate
+			</if>
+			<if test="teacherId != null and teacherId !=''">
+				,teacherid
+			</if>
+			<if test="classId != null and classId != ''">
+				,classid
+			</if>
+			<if test="deadLine != null ">
+				,deadline
+			</if>
+			<if test="totalScore != null ">
+				,totalscore
+			</if>
+		</trim>
+		<trim prefix="values(" suffix=")" prefixOverrides=",">
+			<if test="paperId != null and paperId !=''">
+				,#{paperId}
+			</if>
+			<if test="paperName != null and paperName !=''">
+				,#{paperName}
+			</if>
+			<if test="course.courseId != null and course != null">
+				,#{course.courseId}
+			</if>
+			<if test="grade.gradeId != null and grade != null">
+				,#{grade.gradeId}
+			</if>
+			<if test="userId != null and userId !=''">
+				,#{userId}
+			</if>
+			<if test="questionId != null and questionId !=''">
+				,#{questionId}
+			</if>
+			<if test="beginTime != null ">
+				,#{beginTime}
+			</if>
+			<if test="endTime != null ">
+				,#{endTime}
+			</if>
+			<if test="allowTime != null and allowTime !=''">
+				,#{allowTime}
+			</if>
+			<if test="score != null and score !=''">
+				,#{score}
+			</if>
+			<if test="paperState != null and paperState !=''">
+				,#{paperState}
+			</if>
+			<if test="teacherId != null and teacherId !=''">
+				,#{teacherId}
+			</if>
+			<if test="classId != null and classId != ''">
+				,#{classId}
+			</if>
+			<if test="deadLine != null ">
+				,#{deadLine}
+			</if>
+			<if test="totalScore != null ">
+				,#{totalScore}
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="com.zh.pojo.Paper">
+		update t_paper
+		<set>
+			<if test="paperName!=null">
+				papername=#{paperName},
+			</if>
+			<if test="grade !=null and grade.gradeId">
+				gradeid=#{grade.gradeId},
+			</if>
+			<if test="course !=null and course.courseId">
+				courseid=#{course.courseId},
+			</if>
+			<if test="userId!=null">
+				userid=#{userId},
+			</if>
+			<if test="questionId!=null">
+				questionid=#{questionId},
+			</if>
+			<if test="beginTime!=null">
+				begintime=#{beginTime},
+			</if>
+			<if test="endTime!=null">
+				endtime=#{endTime},
+			</if>
+			<if test="allowTime!=null">
+				allowtime=#{allowTime},
+			</if>
+			<if test="score!=null">
+				score=#{score},
+			</if>
+			<if test="paperstate!=null">
+				paperstate=#{paperState},
+			</if>
+			<if test="teacherId != null and teacherId !=''">
+				teacherid = #{teacherId},
+			</if>
+			<if test="classId != null and classId !=''">
+				classid =#{classId},
+			</if>
+			<if test="deadLine != null ">
+				deadline=#{deadLine},
+			</if>
+			<if test="totalScore != null ">
+				totalscore=#{totalScore},
+			</if>
+		</set>
+			where paperid=#{paperId}
+	</update>
+	
+	<!-- 查询所有记录 -->
+	<select id="find" parameterType="com.zh.pojo.Paper" resultMap="paperRM">
+		select t1.deadline,t1.paperid,t1.papername,t1.userid,t1.questionid,t1.begintime, t1.endtime, t1.allowtime, t1.score, t1.paperstate,t1.teacherid,t1.classid,t1.totalScore,
+		t2.gradename,t3.coursename,t2.gradeid,t3.courseid
+		from t_paper t1,t_grade t2,t_course t3
+		<where>
+		and t1.courseid=t3.courseid
+		and t1.gradeid=t2.gradeid
+			<if test="teacherId != null and teacherId !=''">
+				and t1.teacherid = #{teacherId}
+			</if>
+			and t1.paperstate = '0'
+		</where>
+	</select>
+	
+	<!-- 查询一个录 -->
+	<select id="get" parameterType="com.zh.pojo.Paper" resultMap="paperRM">
+		select t1.deadline,t1.paperid,t1.papername,t1.userid,t1.questionid,t1.begintime, t1.endtime, t1.allowtime, t1.score, t1.paperstate,t1.teacherid,t1.classid,t1.totalScore,
+		t2.gradename,t3.coursename,t2.gradeid,t3.courseid
+		from t_paper t1,t_grade t2,t_course t3
+		<where>
+		and t1.courseid=t3.courseid
+		and t1.gradeid=t2.gradeid
+		and paperstate='0'
+		and t1.paperid=#{id}
+		</where>
+	</select>
+	
+	<!-- 删除一条记录 -->
+	<delete id="delete" parameterType="string">
+		delete from t_paper
+		where paperid=#{id}
+	</delete>
+	
+	<!-- 查询学生已经考试过的试卷 -->
+	<select id="getFinishedUserPaperById" parameterType="com.zh.pojo.Paper" resultMap="paperRM">
+		select t1.deadline,t1.paperid,t1.papername,t1.userid,t1.questionid,t1.begintime, t1.endtime, t1.allowtime, t1.score, t1.paperstate,t1.teacherid,t1.classid,t1.totalScore,
+		t2.gradename,t3.coursename,t2.gradeid,t3.courseid
+		from t_paper t1,t_grade t2,t_course t3
+		<where>
+		and t1.courseid=t3.courseid
+		and t1.gradeid=t2.gradeid
+		and paperstate = '2'
+		and t1.userid=#{id}
+		</where>
+	</select>
+	<select id="getPaperDetail" resultMap="paperRM">
+		select t1.deadline,t1.paperid,t1.papername,t1.userid,t1.questionid,t1.begintime, t1.endtime, t1.allowtime, t1.score, t1.paperstate,t1.teacherid,t1.classid,t1.totalScore,
+		t2.gradename,t3.coursename,t2.gradeid,t3.courseid
+		from t_paper t1,t_grade t2,t_course t3
+		<where>
+		and t1.paperstate='1'
+		and t1.courseid=t3.courseid
+		and t1.gradeid=t2.gradeid
+		<if test="userId !=null and userId !=''">
+			and t1.userid=#{userId}
+		</if>
+		<if test="paperId != null and paperId !=''">
+			and t1.paperid=#{paperId}
+		</if>
+		</where>
+	</select>
+	
+	<update id="updateUserPaper" parameterType="map">
+		update t_paper
+		<set>
+			<if test="paperName!=null">
+				papername=#{paperName},
+			</if>
+			<if test="gradeId!=null">
+				gradeid=#{gradeId},
+			</if>
+			<if test="courseId!=null">
+				courseid=#{courseId},
+			</if>
+			<if test="questionId!=null">
+				questionid=#{questionId},
+			</if>
+			<if test="beginTime!=null">
+				begintime=#{beginTime},
+			</if>
+			<if test="endTime!=null">
+				endtime=#{endTime},
+			</if>
+			<if test="allowTime!=null">
+				allowtime=#{allowTime},
+			</if>
+			<if test="score!=null">
+				score=#{score},
+			</if>
+			<if test="paperState!=null">
+				paperstate=#{paperState},
+			</if>
+		</set>
+			where paperid=#{paperId}
+			and userid=#{userId}
+	</update>
+	
+	<!-- 查询未考试的试卷 -->
+	<select id="getUndoPaper" resultMap="paperRM">
+		select t1.deadline,t1.paperid,t1.papername,t1.userid,t1.questionid,t1.begintime, t1.endtime, t1.allowtime, t1.score, t1.paperstate,t1.teacherid,t1.classid,t1.totalScore,
+		t2.gradename,t3.coursename,t2.gradeid,t3.courseid
+		from t_paper t1,t_grade t2,t_course t3
+		<where>
+		and t1.courseid=t3.courseid
+		and t1.gradeid=t2.gradeid
+		and t1.paperstate='1'
+		and t1.classid = #{classId}
+		and t1.userId IS NULL
+		and t1.paperid not in(select paperid from t_paper where userid=#{userId})
+		</where>
+	</select>
+	
+	<!-- 查询未考试的试卷 -->
+	<select id="qryUndoPaper" resultMap="paperRM">
+		select t1.deadline,t1.paperid,t1.papername,t1.userid,t1.questionid,t1.begintime, t1.endtime, t1.allowtime, t1.score, t1.paperstate,t1.teacherid,t1.classid,t1.totalScore,
+		t2.gradename,t3.coursename,t2.gradeid,t3.courseid
+		from t_paper t1,t_grade t2,t_course t3
+		<where>
+		and t1.courseid=t3.courseid
+		and t1.gradeid=t2.gradeid
+		and t1.paperstate = '1'
+		<if test="userId !=null and userId !=''">
+			and t1.userid=#{userId}
+		</if>
+		</where>
+	</select>
+    <select id="queryPaperByCourseAndGrade" resultMap="paperRM">
+		select t1.deadline,t1.paperid,t1.papername,t1.userid,t1.questionid,t1.begintime, t1.endtime, t1.allowtime, t1.score, t1.paperstate,t1.teacherid,t1.classid,t1.totalScore,
+		t2.gradename,t3.coursename
+		from t_paper t1,t_grade t2,t_course t3
+		<where>
+		and t1.courseid=t3.courseid
+		and t1.gradeid=t2.gradeid
+		and t1.paperstate = '0'
+			<if test="teacherId != null and teacherId !=''">
+				and t1.teacherid =#{teacherId}
+			</if>
+			<if test="courseId != null and courseId !=''">
+				and t1.courseid = #{courseId}
+			</if>
+			<if test="gradeId != null and gradeId !=''">
+				and t1.gradeid = #{gradeId}
+			</if>
+		</where>
+		order by t1.paperId
+	</select>
+	<select id="queryResultByClassAndCourse" resultMap="paperRM">
+		select t1.paperid, t1.score,t1.papername,t1.totalScore,
+		t2.userid as teacherid,t2.username as teachername,
+		t3.id as classid, t3.classname,
+		t4.userid,t4.username
+		from t_paper t1,t_user t2,t_class t3,t_user t4
+		<where>
+			and t1.userid = t4.userid
+			and t1.classid = t3.id
+			and t1.teacherid = t2.userid
+			and t1.paperstate = '2'
+			<if test="teacherId != null and teacherId !=''">
+				and t1.teacherid = #{teacherId}
+			</if>
+			<if test="classId != null and classId !=0">
+				and t1.classid = #{classId}
+			</if>
+			<if test="courseId != null and courseId !=0">
+				and t1.courseid = #{courseId}
+			</if>
+		</where>
+	</select>
+</mapper>

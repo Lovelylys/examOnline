@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.mapper.ResultMapper">
+
+    <resultMap id="resultRM" type="com.zh.pojo.Result">
+        <id property="id" column="id"/>
+        <result property="objectScore" column="objectscore"/>
+        <result property="subjectScore" column="subjectscore"/>
+        <association property="teacher" javaType="com.zh.pojo.User">
+            <id property="userId" column="teacherid"/>
+            <result property="userName" column="teacherName"/>
+        </association>
+        <association property="examClass" javaType="com.zh.pojo.ExamClass">
+            <id property="id" column="classid"/>
+            <result property="className" column="classname"/>
+        </association>
+        <association property="student" javaType="com.zh.pojo.User">
+            <id property="userId" column="userid"/>
+            <result property="userName" column="username"/>
+        </association>
+        <association property="paper" javaType="com.zh.pojo.Paper">
+            <id property="paperId" column="paperid"/>
+            <result property="paperName" column="papername"/>
+        </association>
+    </resultMap>
+
+    <insert id="insert">
+        insert into u_result
+        <trim prefix="(" suffix=")" prefixOverrides=",">
+            <if test="objectScore !=null">
+                ,objectscore
+            </if>
+            <if test="subjectScore !=null">
+                ,subjectscore
+            </if>
+            <if test="teacherId !=null">
+                ,teacherid
+            </if>
+            <if test="classId !=null">
+                ,classid
+            </if>
+            <if test="paperId !=null">
+                ,paperid
+            </if>
+            <if test="studentId !=null">
+                ,studentid
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" prefixOverrides=",">
+            <if test="objectScore !=null">
+                ,#{objectScore}
+            </if>
+            <if test="subjectScore !=null">
+                ,#{subjectScore}
+            </if>
+            <if test="teacherId !=null">
+                ,#{teacherId}
+            </if>
+            <if test="classId !=null">
+                ,#{classId}
+            </if>
+            <if test="paperId !=null">
+                ,#{paperId}
+            </if>
+            <if test="studentId !=null">
+                ,#{studentId}
+            </if>
+        </trim>
+    </insert>
+    <select id="queryResultByClassAndCourse" resultMap="resultRM">
+        select t1.id, t1.objectscore, t1.subjectscore,
+        t2.userid as teacherid,t2.username as teachername,
+        t3.id as classid, t3.classname,
+        t4.userid,t4.username,
+        t5.paperid,t5.papername
+        from u_result t1,t_user t2,t_class t3,t_user t4,t_paper t5
+        <where>
+            and t1.studentid = t4.userid
+            and t1.paperid = t5.paperid
+            and t1.classid = t3.id
+            and t1.teacherid = t2.userid
+            and t5.paperstate = '0'
+            <if test="teacherId != null and teacherId !=''">
+                and t1.teacherid = #{teacherId}
+            </if>
+            <if test="classId != null and classId !=0">
+                and t1.classid = #{classId}
+            </if>
+            <if test="courseId != null and courseId !=0">
+                and t5.courseid = #{courseId}
+            </if>
+        </where>
+    </select>
+
+</mapper>

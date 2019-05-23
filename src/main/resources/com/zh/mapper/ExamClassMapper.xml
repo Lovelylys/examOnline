@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.mapper.ExamClassMapper">
+    <resultMap id="classRM" type="com.zh.pojo.ExamClass">
+        <id property="id" column="id"/>
+        <result property="className" column="classname"/>
+        <association property="grade" javaType="com.zh.pojo.Grade">
+            <result property="gradeName" column="gradename"/>
+        </association>
+    </resultMap>
+    <insert id="insert">
+        insert into t_class
+        <trim prefix="(" suffix=")" prefixOverrides=",">
+            <if test="id !=null">
+                ,id
+            </if>
+            <if test="className !=null and className !=''">
+                ,classname
+            </if>
+            <if test="grade !=null and grade.gradeId !=null">
+                ,gradeid
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" prefixOverrides=",">
+            <if test="id !=null">
+                ,#{id}
+            </if>
+            <if test="className !=null and className !=''">
+                ,#{className}
+            </if>
+            <if test="grade !=null and grade.gradeId !=null">
+                ,#{grade.gradeId}
+            </if>
+        </trim>
+    </insert>
+    <delete id="delete" parameterType="string">
+        delete from t_class
+        <where>
+            id = #{id}
+        </where>
+    </delete>
+
+    <select id="find" resultMap="classRM">
+          select t1.*,t2.gradename from t_class t1,t_grade t2
+          <where>
+              and t1.gradeid= t2.gradeid
+          </where>
+    </select>
+    <select id="get" resultType="com.zh.pojo.ExamClass" parameterType="com.zh.pojo.User">
+        select t1.* from t_class t1
+        <where>
+            and t1.id = #{classId}
+        </where>
+    </select>
+    <select id="queryClassByGradeId" resultMap="classRM">
+        select id,classname from t_class
+        <where>
+            gradeid = #{gradeId}
+        </where>
+    </select>
+    <update id="update">
+      update t_class
+      <set>
+        <if test="className != null and className !=''">
+            classname = #{className},
+        </if>
+        <if test="grade != null and grade.gradeId != null">
+            gradeid = #{grade.gradeId},
+        </if>
+      </set>
+      <where>
+          id = #{id}
+      </where>
+    </update>
+</mapper>
